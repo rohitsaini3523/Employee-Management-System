@@ -4,6 +4,10 @@ employees. Consider the appropriate formula to calculate the salary of each type
 of employee. Use late binding functionality to implement an OO application */
 
 #include<iostream>
+#include<stdlib.h>
+#include<conio.h>
+#include<fstream>
+#include<unistd.h>
 using namespace std;
 
 class employee
@@ -49,10 +53,55 @@ void employee::display()
 //class non-teaching-employees 
 //class housekeeping-employees
 
-
+void admin()
+{
+	string userid = "Admin";
+	char password[10] = "1234";
+	string inputuserid, inputpassword;
+	system("cls");
+	cout << "\n\n\n\n\t\tEmployee Management System\n"
+		 << "Enter User Id: ";
+	cin >> inputuserid;
+	cout << "\nEnter Password: ";
+	cin >> inputpassword;
+	int n = 3;
+	cout << "Connecting ..";
+	while(n--)
+	{
+		cout << "..";
+	}
+	cout << endl;
+	if (userid == inputuserid)
+	{
+		if(password == inputpassword)
+			cout << "Login Successfully!";
+		else if (password != inputpassword)
+		{
+			cout << "Wrong Password\n";
+			sleep(2);
+			admin();
+		}
+		sleep(1);
+	}
+	else
+	{
+		cout << "\n\n\t\tWrong User Id or Password!!!!";
+		sleep(2);
+		admin();
+	}
+}
 
 int main()
 {
-
-    return 0;
+	admin();
+	
+	employee E;
+	E.accept();
+	E.display();
+	fstream f;
+	f.open("Data.txt",ios::out|ios::app);
+	f.write((char *)&f, sizeof(f));
+	f.close();
+	getch();
+	return 0;
 }
