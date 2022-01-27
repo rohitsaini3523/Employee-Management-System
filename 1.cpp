@@ -99,8 +99,6 @@ class teaching_Employee : public employee
 public:
 	void calculate_salary()
 	{
-		cout << "\n\t\tEnter Number of Present Days for Employee: ";
-		putatten();
 		basic_sal = 5000;
 		da = 0.97 * basic_sal;
 		ta = 0.1 * basic_sal;
@@ -122,8 +120,6 @@ class non_teaching_Employee : public employee
 public:
 	void calculate_salary()
 	{
-		cout << "\n\t\tEnter Number of Present Days for Employee: ";
-		putatten();
 		basic_sal = 4000;
 		da = 0.97 * basic_sal;
 		ta = 0.1 * basic_sal;
@@ -148,8 +144,6 @@ public:
 	}
 	void calculate_salary()
 	{
-		cout << "\n\t\tEnter Number of Present Days for Employee: ";
-		putatten();
 		basic_sal = 2500;
 		da = 0.97 * basic_sal;
 		ta = 0.1 * basic_sal;
@@ -212,7 +206,7 @@ void ADMINCONTROLS()
 	{
 		cout << "\n\n\n\n\t\t**************MENU***************\n";
 		cout << "\t\t1.Add New Employee\n\t\t2.Put attendance";
-		cout << "\n\t\t3.Send Payments to all";
+		cout << "\n\t\t3.Search Employee by emp_id";
 		cout << "\n\t\t4.Display all Employ By types\n\t\t";
 		cout << "5.Delete Employee by Emp_id\n\t\t6.Reset Weekly Payment\n\t\t7.Exit\n\t\tChoice : ";
 		cin >> choice;
@@ -236,6 +230,7 @@ void ADMINCONTROLS()
 					file.open("Data.txt", ios::app | ios::binary);
 					file.write((char *)&t, sizeof(t));
 					cout << "\n\t\tEmployee Created Successfully!";
+					cout << "\n\t\t**********************************\n";
 					file.close();
 				}
 				else if (ch1 == 2)
@@ -249,6 +244,7 @@ void ADMINCONTROLS()
 					file.open("Data.txt", ios::app | ios::binary);
 					file.write((char *)&nt, sizeof(nt));
 					cout << "\n\t\tEmployee Created Successfully!";
+					cout << "\n\t\t**********************************\n";
 					file.close();
 				}
 				else if (ch1 == 3)
@@ -262,16 +258,17 @@ void ADMINCONTROLS()
 					file.open("Data.txt", ios::app | ios::binary);
 					file.write((char *)&h, sizeof(h));
 					cout << "\n\t\tEmployee Created Successfully!";
+					cout << "\n\t\t**********************************\n";
 					file.close();
 				}
-				sleep(1);
+				getch();
 			} while (ch1 != 4);
 		}
 		else if (choice == 2)
 		{
 			cout << "\n\n\n\n\t\t********Search MENU***************\n";
 			cout << "\n\t\tAttendance To be Filled ";
-			fstream f1;
+			ifstream f1;
 			employee *e;
 			teaching_Employee t;
 			e = &t;
@@ -280,6 +277,11 @@ void ADMINCONTROLS()
 			while (f1.read((char *)&t, sizeof(t)))
 			{
 				t.display();
+				cout << "\n\t\t**********************************\n";
+				cout << "\n\t\t\tDays Should be in 0-7 only\n";
+				cout << "\n\t\t**********************************\n";
+				cout << "\n\t\tEnter Number of Present Days for Employee: ";
+				t.putatten();
 				e->calculate_salary();
 				if (t.get_type() == 1)
 					cout << "\n\t\tEmploy Type\t:\tTeaching";
@@ -288,19 +290,24 @@ void ADMINCONTROLS()
 				else if (t.get_type() == 3)
 					cout << "\n\t\tEmployee Type\t:\tHouse-Keeping";
 				t.display_gross();
+				cout << "\n\t\t**********************************\n";
 			}
 			f1.close();
-			sleep(3);
+			getch();
 			system("cls");
 		}
 		else if (choice == 4)
 		{
 			int m;
+			do
+			{
 			system("cls");
 			cout << "\n\n\n\n\t\t********Display MENU***************\n";
 			cout << "\t\tSelect Employee type\n";
 			cout << "\t\t1.Teaching\n\t\t2.Non teaching\n\t\t3.Housekeeping\n\t\t4.Back\n\t\tChoice: ";
 			cin >> m;
+			if(m==4)
+				break;
 			ifstream f1("Data.txt", ios::binary);
 			f1.seekg(0, ios::beg);
 			employee *e;
@@ -312,12 +319,14 @@ void ADMINCONTROLS()
 				{
 					//e->calculate_salary();
 					t1.display();
+					cout << "\n\t\t**********************************\n";
 					//t1.display_gross();
 				}
 			}
 			f1.close();
-			sleep(3);
+			getch();
 			system("cls");
+			} while (m != 4);
 		}
 		else if (choice == 5)
 		{
@@ -325,33 +334,44 @@ void ADMINCONTROLS()
 		}
 		else if (choice == 3)
 		{
-			int flag = 1;
-			fstream f1("Data.txt", ios::binary);
-			f1.seekg(0, ios::beg);
-			teaching_Employee t1;
-			while (f1.read((char *)&t1, sizeof(t1)))
+			int flag = 0;
+			int k;
+			cout << "\n\t\tEnter Employee Emp_id to be Searched: ";
+			cin >> k;
+			ifstream f;
+			f.open("Data.txt");
+			f.seekg(0, ios::beg);
+			teaching_Employee t;
+			while (f.read((char *)&t, sizeof(t)))
 			{
-				if (t1.getatten() <= 0)
+				if (t.get_emp_id() == k)
 				{
-					cout << "\n\t\tPut attendance First!";
-					continue;
+					t.display();
+					if (t.get_type() == 1)
+					cout << "\n\t\tEmploy Type\t:\tTeaching";
+				else if (t.get_type() == 2)
+					cout << "\n\t\tEmploy Type\t:\tNon-Teaching";
+				else if (t.get_type() == 3)
+					cout << "\n\t\tEmployee Type\t:\tHouse-Keeping";
+				//t.display_gross();
+				cout << "\n\t\t**********************************\n";
+					flag = 1;
 				}
-				t1.markpaid();
 			}
-			f1.close();
-			sleep(3);
-			system("cls");
+			if (flag == 0)
+			{
+				cout << "\n\t\tEmployee Not Found";
+				cout << "\n\t\t**********************************\n";
+			}
+
+			f.close();
+			getch();
 		}
 		else if (choice == 6)
 		{
-			fstream f1("Data.txt", ios::binary);
-			f1.seekg(0, ios::beg);
-			teaching_Employee t1;
-			while (f1.read((char *)&t1, sizeof(t1)))
-			{
-				t1.resetpaid();
-			}
 			cout << "\n\t\tResetting All weekly Payments!";
+			cout << "\n\t\t**********************************\n";
+			getch();
 		}
 		if (choice ==7)
 		{
@@ -370,6 +390,7 @@ int admin()
 	cin >> inputuserid;
 	cout << "\t\t**\t\tEnter Password: ";
 	cin >> inputpassword;
+	cout << "\n\t\t**********************************\n";
 	char ch;
 	cout << endl;
 	if (userid == inputuserid)
