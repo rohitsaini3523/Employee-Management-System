@@ -276,7 +276,6 @@ void putAttendence()
 			else if (t.get_type() == 3)
 				cout << "\n\t\tEmployee Type\t:\tHouse-Keeping";
 			e->calculate_salary();
-			t.display_gross();
 			cout << "\n\t\t**********************************\n";
 			flag = 1;
 		}
