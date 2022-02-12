@@ -13,14 +13,16 @@ protected:
 	string address;
 	string email_id;
 	string mobile_no;
-	int emp_id;
+	long int emp_id;
 	int type;
 	int atten;
 	float weeklySal, da, ta, pf;
+	int total_emp;
 
 public:
 	employee()
 	{
+		total_emp++;
 		name = "-";
 		address = "-";
 		email_id = "-";
@@ -46,6 +48,7 @@ public:
 	{
 		cin >> atten;
 	}
+	int gettotalemp();
 	int getatten()
 	{
 		return atten;
@@ -54,7 +57,9 @@ public:
 };
 void employee::accept()
 {
+	string s;
 	cout << "\n\t\t*******Enter Employee Details********";
+	cout << "\n\n\t\tInstructions For \n\t\tEmail should contain only intials";
 	cout << "\n\t\tEnter Name: ";
 	cin >> name;
 	cin.ignore();
@@ -62,10 +67,23 @@ void employee::accept()
 	getline(cin, address);
 	cout << "\t\tEnter Email Id: ";
 	cin >> email_id;
+	int k = 0;
+	for (int i = 0; i < email_id.length(); i++)
+	{
+		if (email_id[i] == '@')
+		{
+			break;
+		}
+		else
+		{
+			k++;
+		}
+	}
+	s = email_id.substr(0, k);
+	email_id = s;
 	cout << "\t\tEnter Mobile No: ";
 	cin >> mobile_no;
-	cout << "\t\tEnter Employee Id: ";
-	cin >> emp_id;
+	emp_id = (10220 + get_type()) * 10000 + gettotalemp();
 }
 
 void employee::display()
@@ -74,13 +92,13 @@ void employee::display()
 	cout << "\n\t\tName\t\t:\t" << name;
 	cout << "\n\t\tEmployee Id\t:\t" << emp_id;
 	cout << "\n\t\tAddress		:\t" << address;
-	cout << "\n\t\tEmail Id\t:\t" << email_id;
+	cout << "\n\t\tEmail Id\t:\t" << email_id + "@mycompany.edu";
 	cout << "\n\t\tMobile No\t:\t" << mobile_no;
 }
 
-//class teaching-employees
-//class non-teaching-employees
-//class housekeeping-employees
+// class teaching-employees
+// class non-teaching-employees
+// class housekeeping-employees
 
 class teaching_Employee : public employee
 {
@@ -96,11 +114,6 @@ public:
 		ta = 0.1 * basic_sal;
 		pf = 0.12 * basic_sal;
 		weeklySal = (basic_sal + da + ta + pf) * getatten();
-	}
-	void display_gross()
-	{
-		//display();
-
 		cout << "\n\t\tGross Salary(Weekly):\t" << weeklySal << endl;
 	}
 };
@@ -119,10 +132,6 @@ public:
 		ta = 0.1 * basic_sal;
 		pf = 0.12 * basic_sal;
 		weeklySal = (basic_sal + da + ta + pf) * getatten();
-	}
-	void display_gross()
-	{
-		//display();
 		cout << "\n\t\tGross Salary(Weekly):\t" << weeklySal << endl;
 	}
 };
@@ -145,14 +154,21 @@ public:
 		ta = 0.1 * basic_sal;
 		pf = 0.12 * basic_sal;
 		weeklySal = (basic_sal + da + ta + pf) * getatten();
-	}
-	void display_gross()
-	{
-		//display();
-
 		cout << "\n\t\tGross Salary(Weekly):\t" << weeklySal << endl;
 	}
 };
+int employee::gettotalemp()
+{
+	int k = 1;
+	teaching_Employee t;
+	ifstream file("Data.txt", ios::binary);
+	while (file.read((char *)&t, sizeof(t)))
+	{
+		k++;
+	}
+	total_emp = k;
+	return total_emp;
+}
 void deleterecord()
 {
 	int flag = 0;
@@ -190,7 +206,7 @@ void deleterecord()
 	rename("Temp.txt", "Data.txt");
 	sleep(1.5);
 	system("cls");
-	//cout << "\n\t\tSYSTEM WILL LOGOUT!!";
+	// cout << "\n\t\tSYSTEM WILL LOGOUT!!";
 	return;
 }
 
@@ -207,9 +223,9 @@ void addEmployee()
 		if (ch1 == 1)
 		{
 			teaching_Employee t;
-			t.accept();
 			t.settype(ch1);
-			cout << "\nEnter Details Are: \n";
+			t.accept();
+			cout << "\n\n\t\tEnter Details Are: \n";
 			t.display();
 			fstream file;
 			file.open("Data.txt", ios::app | ios::binary);
@@ -221,8 +237,8 @@ void addEmployee()
 		else if (ch1 == 2)
 		{
 			non_teaching_Employee nt;
-			nt.accept();
 			nt.settype(ch1);
+			nt.accept();
 			cout << "\nEnter Details Are: \n";
 			nt.display();
 			fstream file;
@@ -235,8 +251,8 @@ void addEmployee()
 		else if (ch1 == 3)
 		{
 			housekeeping_Employee h;
-			h.accept();
 			h.settype(ch1);
+			h.accept();
 			cout << "\nEnter Details Are: \n";
 			h.display();
 			fstream file;
@@ -256,7 +272,7 @@ void putAttendence()
 	cout << "\n\n\n\n\t\t********Search MENU***************\n";
 	cout << "\n\t\tAttendance To be Filled ";
 	int flag = 0;
-	int k;
+	long int k;
 	cout << "\n\t\tEnter Employee Emp_id For Attendance: ";
 	cin >> k;
 	ifstream f;
@@ -267,7 +283,7 @@ void putAttendence()
 	e = &t;
 	while (f.read((char *)&t, sizeof(t)))
 	{
-		if (t.get_emp_id()== k)
+		if (t.get_emp_id() == k)
 		{
 			if (t.get_type() == 1)
 				cout << "\n\t\tEmploy Type\t:\tTeaching";
@@ -294,7 +310,7 @@ void putAttendence()
 void searchEmployee()
 {
 	int flag = 0;
-	int k;
+	long int k;
 	cout << "\n\t\tEnter Employee Emp_id to be Searched: ";
 	cin >> k;
 	ifstream f;
@@ -312,7 +328,7 @@ void searchEmployee()
 				cout << "\n\t\tEmploy Type\t:\tNon-Teaching";
 			else if (t.get_type() == 3)
 				cout << "\n\t\tEmployee Type\t:\tHouse-Keeping";
-			//t.display_gross();
+			// t.display_gross();
 			cout << "\n\t\t**********************************\n";
 			flag = 1;
 		}
@@ -349,10 +365,10 @@ void displayEmployee_bytypes()
 		{
 			if (t1.get_type() == m)
 			{
-				//e->calculate_salary();
+				// e->calculate_salary();
 				t1.display();
 				cout << "\n\t\t**********************************\n";
-				//t1.display_gross();
+				// t1.display_gross();
 			}
 		}
 		f1.close();
